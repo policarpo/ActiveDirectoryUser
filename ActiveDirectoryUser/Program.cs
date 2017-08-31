@@ -11,6 +11,9 @@ namespace ActiveDirectoryUser
             Console.WriteLine($"Name: {adService.GetName()}");
             Console.WriteLine($"User name: {adService.GetUserName()}");
             Console.WriteLine($"Email: {adService.GetEmailAddress()}");
+            Console.WriteLine($"Groups: {String.Join(Environment.NewLine,adService.GetGroups())}");
+
+            Console.ReadKey();
         }
     }
 }

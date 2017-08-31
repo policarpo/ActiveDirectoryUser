@@ -1,5 +1,6 @@
 ﻿using System;
 using System.DirectoryServices.AccountManagement;
+using System.Linq;
 
 namespace ActiveDirectoryUser
 {
@@ -67,12 +68,30 @@ namespace ActiveDirectoryUser
         {
             try
             {
-                _userPrincipal = UserPrincipal.Current;
+                _userPrincipal = UserPrincipal.Current; 
             }
             catch (Exception ex)
             {
                 _log.Error("Error occured while setting user principle.", ex);
             }
+        }
+
+        public string[] GetGroups()
+        {
+            string[] output = null;
+            string username = GetUserName();
+            using (var ctx = new PrincipalContext(ContextType.Domain))
+            using (var user = UserPrincipal.FindByIdentity(ctx, username))
+            {
+                if (user != null)
+                {
+                    output = user.GetGroups() //this returns a collection of principal objects
+                        .Select(x => x.SamAccountName) // select the name.  you may change this to choose the display name or whatever you want
+                        .ToArray(); // convert to string array
+                }
+            }
+
+            return output;
         }
     }
 }
